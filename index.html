@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asset Viewer - Forestry 3D</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #ffffff;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    #ui {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      min-width: 250px;
+    }
+
+    h1 {
+      margin: 0 0 15px 0;
+      font-size: 1.2rem;
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 1rem;
+      background-color: #f9f9f9;
+      color: #333;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:focus {
+      border-color: #4CAF50;
+    }
+
+    .hint {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="ui">
+    <h1>Asset Viewer</h1>
+    <select id="assetSelect">
+      <!-- Dynamically populated from src directory -->
+    </select>
+    <div class="hint">Left Click to Rotate<br>Right Click to Pan<br>Scroll to Zoom</div>
+
+    <div id="treeControls" style="display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+      <h2 style="font-size: 1rem; margin: 0 0 10px 0;">Tree Parameters</h2>
+
+      <label for="heightSlider" style="display: block; font-size: 0.9rem; margin-bottom: 5px;">
+        Total Height: <span id="heightValue">2.5</span>m
+      </label>
+      <input type="range" id="heightSlider" min="0.5" max="10.0" step="0.1" value="2.5"
+        style="width: 100%; margin-bottom: 10px;">
+
+      <label for="dbhSlider" style="display: block; font-size: 0.9rem; margin-bottom: 5px;">
+        DBH (Diameter): <span id="dbhValue">0.4</span>m
+      </label>
+      <input type="range" id="dbhSlider" min="0.1" max="1.5" step="0.05" value="0.4"
+        style="width: 100%; margin-bottom: 10px;">
+
+      <label for="cbhSlider" style="display: block; font-size: 0.9rem; margin-bottom: 5px;">
+        Crown Base Height: <span id="cbhValue">0.8</span>m
+      </label>
+      <input type="range" id="cbhSlider" min="0.1" max="5.0" step="0.1" value="0.8" style="width: 100%;">
+    </div>
+
+    <div id="plotControls" style="display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+      <h2 style="font-size: 1rem; margin: 0 0 10px 0;">Plot Parameters</h2>
+
+      <label for="radiusSlider" style="display: block; font-size: 0.9rem; margin-bottom: 5px;">
+        Radius: <span id="radiusValue">5.0</span>m
+      </label>
+      <input type="range" id="radiusSlider" min="1.0" max="20.0" step="0.1" value="5.0"
+        style="width: 100%; margin-bottom: 10px;">
+
+      <label for="linetypeSelect" style="display: block; font-size: 0.9rem; margin-bottom: 5px;">
+        Line Type:
+      </label>
+      <select id="linetypeSelect" style="width: 100%; margin-bottom: 10px;">
+        <option value="solid">Solid</option>
+        <option value="dashed">Dashed</option>
+      </select>
+
+      <label for="colorPicker" style="display: block; font-size: 0.9rem; margin-bottom: 5px;">
+        Line Color:
+      </label>
+      <input type="color" id="colorPicker" value="#000000"
+        style="width: 100%; height: 35px; border: 1px solid #e0e0e0; border-radius: 6px; cursor: pointer;">
+    </div>
+  </div>
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
