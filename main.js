@@ -161,6 +161,8 @@ const dbhSlider = document.getElementById('dbhSlider');
 const dbhValue = document.getElementById('dbhValue');
 const cbhSlider = document.getElementById('cbhSlider');
 const cbhValue = document.getElementById('cbhValue');
+const cwSlider = document.getElementById('cwSlider');
+const cwValue = document.getElementById('cwValue');
 
 const radiusSlider = document.getElementById('radiusSlider');
 const radiusValue = document.getElementById('radiusValue');
@@ -190,6 +192,11 @@ assetSelect.addEventListener('change', (e) => {
         if (currentAsset.options.crownBaseHeight !== undefined) {
             cbhSlider.value = currentAsset.options.crownBaseHeight.toFixed(1);
             cbhValue.innerText = cbhSlider.value;
+        }
+
+        if (currentAsset.options.crownWidth !== undefined) {
+            cwSlider.value = currentAsset.options.crownWidth.toFixed(1);
+            cwValue.innerText = cwSlider.value;
         }
     } else if (categoryName === 'Measurement' && currentAsset.options) {
         // Reset sliders to the plot's current options
@@ -239,6 +246,18 @@ cbhSlider.addEventListener('input', (e) => {
     
     if (currentAsset && currentAsset.options) {
         currentAsset.options.crownBaseHeight = val;
+        if (typeof currentAsset.init === 'function') {
+            currentAsset.init();
+        }
+    }
+});
+
+cwSlider.addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value);
+    cwValue.innerText = val.toFixed(1);
+    
+    if (currentAsset && currentAsset.options) {
+        currentAsset.options.crownWidth = val;
         if (typeof currentAsset.init === 'function') {
             currentAsset.init();
         }

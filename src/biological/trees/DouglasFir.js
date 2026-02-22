@@ -12,8 +12,10 @@ export default class DouglasFir extends Conifer {
             height: options.height !== undefined ? options.height : Generator.range(1.5, 2.5),
             dbh: options.dbh !== undefined ? options.dbh : 0.5,
             crownBaseHeight: options.crownBaseHeight !== undefined ? options.crownBaseHeight : 0.6,
+            crownWidth: options.crownWidth !== undefined ? options.crownWidth : 2.0,
             layers: options.layers || 3,
-            color: options.color || new THREE.Color().setHSL(0.3 + Math.random() * 0.05, 0.4, 0.25 + Math.random() * 0.1),
+            trunkColor: options.trunkColor || '#4a3728',
+            crownColor: options.crownColor || options.color || new THREE.Color().setHSL(0.3 + Math.random() * 0.05, 0.4, 0.25 + Math.random() * 0.1),
             ...options
         });
 
@@ -26,30 +28,32 @@ export default class DouglasFir extends Conifer {
             this.group.remove(this.group.children[0]); 
         }
 
-        // Trunk
         const trunkHeight = this.options.height;
-        const trunkGeo = new THREE.CylinderGeometry(this.options.trunkRadius * 0.7, this.options.trunkRadius, trunkHeight, 8);
-        const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a3728' });
+        // The space available for foliage is total height minus crown base height
+        const crownHeight = Math.max(0.1, trunkHeight - this.options.crownBaseHeight);
+
+        // Trunk
+        // Stop the trunk midway through the crown so it doesn't poke through the top
+        const visibleTrunkHeight = this.options.crownBaseHeight + (crownHeight * 0.5);
+        const trunkGeo = new THREE.CylinderGeometry(this.options.trunkRadius * 0.4, this.options.trunkRadius, visibleTrunkHeight, 8);
+        const trunkMat = new THREE.MeshStandardMaterial({ color: this.options.trunkColor });
         const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-        trunk.position.y = trunkHeight / 2;
+        trunk.position.y = visibleTrunkHeight / 2;
         trunk.castShadow = true;
         trunk.receiveShadow = true;
         this.group.add(trunk);
 
         // Foliage (Cones)
         const leafMat = new THREE.MeshStandardMaterial({ 
-            color: this.options.color,
+            color: this.options.crownColor,
             roughness: 0.8
         });
-
-        // The space available for foliage is total height minus crown base height
-        const crownHeight = Math.max(0.1, trunkHeight - this.options.crownBaseHeight);
 
         for (let i = 0; i < this.options.layers; i++) {
             const layerScale = 1 - (i * (1 / this.options.layers)); 
             
             // Cones get thinner as they go up
-            const coneRadius = (trunkHeight * 0.5) * layerScale;
+            const coneRadius = (this.options.crownWidth / 2) * layerScale;
             // The height of a single layer cone
             const coneHeight = crownHeight * 0.7;
             

@@ -12,6 +12,8 @@ export default class Tree extends Asset {
             height: options.height || 2.5,
             dbh: options.dbh || 0.4,
             crownBaseHeight: options.crownBaseHeight !== undefined ? options.crownBaseHeight : 0.8,
+            trunkColor: options.trunkColor || '#6d4c41', // Default brown
+            crownColor: options.crownColor || '#2e7d32', // Default green
             ...options
         };
 

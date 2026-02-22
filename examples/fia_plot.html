@@ -5,6 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FIA Plot Example - Forestry 3D</title>
+
+  <!-- CCapture for video recording -->
+  <script src="https://unpkg.com/ccapture.js@1.1.0/build/CCapture.all.min.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -63,14 +67,8 @@
 
 <body>
   <div id="info">
-    <h1>FIA Plot Design</h1>
-    <p>Standard USDA Forest Service inventory plot: 4 subplots (24ft radius) spaced 120ft apart.</p>
-    <div class="legend">
-      <div class="legend-item">
-        <div class="color-box" style="background: #000000; border: 1px solid #333;"></div>
-        <span>Subplot Boundary</span>
-      </div>
-    </div>
+    <h1>Capture Ready</h1>
+    <p>Press <b>R</b> to start recording.<br>Press <b>S</b> to stop & save (WebM).</p>
   </div>
   <script type="module" src="./fia_plot.js"></script>
 </body>

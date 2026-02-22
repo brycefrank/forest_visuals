@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import FIAPlot from '../src/measurement/FIAPlot.js';
 import DouglasFir from '../src/biological/trees/DouglasFir.js';
-import WhiteOak from '../src/biological/trees/WhiteOak.js';
 import Generator from '../src/core/Generator.js';
 
 // --- Scene Setup ---
@@ -10,9 +9,9 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color('#eef2f3');
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(40, 40, 60);
+camera.position.set(60, 60, 90); // Zoomed out farther
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = true;
@@ -36,11 +35,11 @@ sun.shadow.mapSize.width = 2048;
 sun.shadow.mapSize.height = 2048;
 scene.add(sun);
 
-// --- Grid ---
-const size = 200;
-const divisions = 10; // Coarse grid (20m squares)
-const gridHelper = new THREE.GridHelper(size, divisions, 0x9ca3af, 0xd1d5db);
-scene.add(gridHelper);
+// --- Grid (Disabled) ---
+// const size = 100;
+// const divisions = 10; // Coarse grid (20m squares)
+// const gridHelper = new THREE.GridHelper(size, divisions, 0x9ca3af, 0xd1d5db);
+// scene.add(gridHelper);
 
 // --- FIA Plot ---
 const fiaPlot = new FIAPlot({ 
@@ -73,21 +72,27 @@ subplotCenters.forEach((center, idx) => {
     }
 
     // Add trees to this subplot
-    const treeCount = Generator.rangeInt(5, 12);
+    const treeCount = Generator.rangeInt(3, 6);
     for (let i = 0; i < treeCount; i++) {
         const angle = Math.random() * Math.PI * 2;
         const dist = Math.sqrt(Math.random()) * SUBPLOT_RADIUS;
         const tx = cx + Math.cos(angle) * dist;
         const tz = cz + Math.sin(angle) * dist;
 
-        const isConifer = Generator.chance(0.6);
-        const tree = isConifer ? new DouglasFir() : new WhiteOak();
+        // Base dimensions with some random shuffle
+        const hOffset = Generator.range(-0.5, 0.5);
+        const dimensionJitter = Generator.range(-0.2, 0.2);
+        
+        const tree = new DouglasFir({
+            height: 16.0 + (hOffset * 4.0), // ~20m tall
+            dbh: 0.75 + (dimensionJitter * 0.1), // ~15 inches dbh
+            crownBaseHeight: 8.0 + (hOffset * 3.0),
+            crownWidth: 5.0 + (dimensionJitter * 1.5),
+            trunkColor: '#ce623e',
+            crownColor: '#0ea351'
+        });
         
         tree.setPosition(tx, 0, tz);
-        
-        // Randomize size slightly
-        const scale = Generator.range(0.7, 1.6);
-        tree.setScale(scale);
         
         tree.addTo(scene);
         assets.push(tree);
@@ -97,7 +102,9 @@ subplotCenters.forEach((center, idx) => {
 // --- Controls ---
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.target.set(0, 0, 0);
+controls.target.set(0, 5, 0); // Focus slightly above ground
+controls.autoRotate = true;     // Enable auto rotation
+controls.autoRotateSpeed = 10; // Speed of the rotation
 
 // --- Animation Loop ---
 const clock = new THREE.Clock();
@@ -110,10 +117,36 @@ function animate() {
         if (asset.update) asset.update(time, delta);
     });
 
-    controls.update();
+    controls.update(); // autoRotate requires controls.update() every frame
     renderer.render(scene, camera);
+
+    if (isRecording) {
+        capturer.capture(renderer.domElement);
+    }
 }
-animate();
+
+// --- Capture Setup ---
+const capturer = new window.CCapture({
+    format: 'webm',
+    framerate: 30,
+    verbose: true
+});
+let isRecording = false;
+
+window.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'r' && !isRecording) {
+        console.log("Recording started...");
+        capturer.start();
+        isRecording = true;
+    } else if (e.key.toLowerCase() === 's' && isRecording) {
+        console.log("Recording stopped. Saving...");
+        isRecording = false;
+        capturer.stop();
+        capturer.save();
+    }
+});
+
+animate(); // Start animation loop AFTER everything is initialized
 
 // --- Resize Handler ---
 window.addEventListener('resize', () => {
