@@ -1,8 +1,7 @@
 # forest_visuals
 
-<div align="center">
-  <video src="./sample.webm" autoplay loop muted playsinline width="100%"></video>
-</div>
+![FIA Plot Sample](./sample.gif)
+
 
 This repository is a collection of 3D assets for the purpose of visualizing
 forestry concepts.

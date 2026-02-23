@@ -127,8 +127,9 @@ function animate() {
 
 // --- Capture Setup ---
 const capturer = new window.CCapture({
-    format: 'webm',
-    framerate: 30,
+    format: 'gif',
+    workersPath: './',
+    framerate: 20,
     verbose: true
 });
 let isRecording = false;
