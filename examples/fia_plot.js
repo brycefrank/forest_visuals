@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import FIAPlot from '../src/measurement/FIAPlot.js';
 import DouglasFir from '../src/biological/trees/DouglasFir.js';
+import Guy from '../src/social/Guy.js';
 import Generator from '../src/core/Generator.js';
 
 // --- Scene Setup ---
@@ -55,6 +56,13 @@ fiaPlot.addTo(scene);
 
 // --- Distribute Trees ---
 const assets = [];
+
+// --- Add a Guy for Scale ---
+const lumberjack = new Guy();
+lumberjack.setPosition(0, 0, 2); // Stand him a bit offset from the absolute center
+lumberjack.addTo(scene);
+assets.push(lumberjack);
+
 const SUBPLOT_DISTANCE = 36.576; // 120 feet
 const SUBPLOT_RADIUS = 7.3152;  // 24 feet
 
@@ -133,7 +141,7 @@ function animate() {
 const capturer = new window.CCapture({
     format: 'gif',
     workersPath: './',
-    framerate: 60, // Increased from 20 to 30 for smoother motion
+    framerate: 0, // Increased from 20 to 30 for smoother motion
     quality: 10,
     verbose: true
 });
