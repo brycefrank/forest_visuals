@@ -1,8 +1,5 @@
 # forest_visuals
 
-![FIA Plot Sample](./sample.gif)
-
-
 This repository is a collection of 3D assets for the purpose of visualizing
 forestry concepts.
 
@@ -22,3 +19,7 @@ To view assets run
 ```bash
 npm run start
 ```
+
+## Examples
+
+![FIA Plot Sample](./sample.gif)

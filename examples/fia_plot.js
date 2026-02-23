@@ -8,12 +8,14 @@ import Generator from '../src/core/Generator.js';
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#eef2f3');
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+const RENDER_SIZE = 600;
+
+const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
 camera.position.set(60, 60, 90); // Zoomed out farther
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(RENDER_SIZE, RENDER_SIZE);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -35,17 +37,19 @@ sun.shadow.mapSize.width = 2048;
 sun.shadow.mapSize.height = 2048;
 scene.add(sun);
 
-// --- Grid (Disabled) ---
-// const size = 100;
-// const divisions = 10; // Coarse grid (20m squares)
-// const gridHelper = new THREE.GridHelper(size, divisions, 0x9ca3af, 0xd1d5db);
-// scene.add(gridHelper);
+// --- Ground (for shadows) ---
+const planeGeo = new THREE.PlaneGeometry(200, 200);
+const planeMat = new THREE.ShadowMaterial({ opacity: 0.15 });
+const plane = new THREE.Mesh(planeGeo, planeMat);
+plane.rotation.x = -Math.PI / 2;
+plane.receiveShadow = true;
+scene.add(plane);
 
 // --- FIA Plot ---
 const fiaPlot = new FIAPlot({ 
     radius: 7.3152, 
     color: '#000000',
-    linetype: 'dashed'
+    linetype: 'solid'
 });
 fiaPlot.addTo(scene);
 
@@ -129,7 +133,8 @@ function animate() {
 const capturer = new window.CCapture({
     format: 'gif',
     workersPath: './',
-    framerate: 20,
+    framerate: 60, // Increased from 20 to 30 for smoother motion
+    quality: 10,
     verbose: true
 });
 let isRecording = false;
@@ -149,9 +154,9 @@ window.addEventListener('keydown', (e) => {
 
 animate(); // Start animation loop AFTER everything is initialized
 
-// --- Resize Handler ---
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
+// --- Resize Handler (Disabled to maintain square aspect ratio for GIF) ---
+// window.addEventListener('resize', () => {
+//     camera.aspect = window.innerWidth / window.innerHeight;
+//     camera.updateProjectionMatrix();
+//     renderer.setSize(window.innerWidth, window.innerHeight);
+// });
