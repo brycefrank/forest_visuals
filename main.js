@@ -118,6 +118,11 @@ const loadAsset = (assetName) => {
             camera.position.set(0, 60, 60); // Much higher to see the ~75m spread
             controls.target.set(0, 0, 0);
             gridGroup.visible = true; // Keep grid for FIA plot
+        } else if (assetName === 'Hypsometer' || assetName === 'LoggersTape' || assetName === 'Relaskop') {
+            camera.position.set(0.1, 0.1, 0.2); // Very close for small hand tools
+            controls.target.set(0, 0.05, 0);
+            gridGroup.visible = true;
+            currentAsset.setPosition(0, 0.05, 0); // Lift out of the floor plane
         } else {
             camera.position.set(4, 4, 6);
             controls.target.set(0, 1.5, 0);

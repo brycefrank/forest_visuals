@@ -80,14 +80,14 @@ export default class Hypsometer extends Asset {
         const topLensGeo = new THREE.CylinderGeometry(width * 0.25, width * 0.25, depth * 0.05, 16);
         topLensGeo.rotateX(Math.PI / 2);
         const topLens = new THREE.Mesh(topLensGeo, lensMat);
-        topLens.position.set(0, height * 0.2, -depth / 2 - 0.005);
+        topLens.position.set(0, height * 0.2, -depth / 2 - 0.0025);
         this.group.add(topLens);
         
         // Bottom bigger lens (monocular objective)
         const botLensGeo = new THREE.CylinderGeometry(width * 0.35, width * 0.35, depth * 0.05, 16);
         botLensGeo.rotateX(Math.PI / 2);
         const botLens = new THREE.Mesh(botLensGeo, lensMat);
-        botLens.position.set(0, -height * 0.2, -depth / 2 - 0.005);
+        botLens.position.set(0, -height * 0.2, -depth / 2 - 0.0025);
         this.group.add(botLens);
 
         // 5. Side LCD Screen (+X side)
